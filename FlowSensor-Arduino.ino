@@ -16,8 +16,6 @@ void flow () // Interrupt function
   flow_frequency++;
 }
 
-
-
 void setup()
 {
   pinMode(flowsensor, INPUT);
@@ -73,8 +71,7 @@ void loop ()
 //              At this stage send TURN OFF Signal to Motor
              digitalWrite(motorCutoff, HIGH);
             }
-          }
-        
+          }    
       }
       else
       {
