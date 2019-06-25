@@ -1,2 +1,2 @@
-# arduino_dry_run_safe_waterpump
+# Safeguard water pumps incase of dryrun
 This is useful to cut off the power to submersible water pump if running running dry 
