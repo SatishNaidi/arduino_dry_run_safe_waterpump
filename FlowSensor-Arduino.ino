@@ -1,7 +1,7 @@
 volatile int flow_frequency; // Measures flow sensor pulses
 unsigned int l_hour; // Calculated litres/hour
 unsigned char flowsensor = 2; // FlowSensor Input
-unsigned char motorCutoff = 13; // Relay Output
+unsigned char motorCutoff = 12; // Relay Output
 unsigned long currentTime;
 unsigned long cloopTime;
 
