@@ -7,20 +7,30 @@ unsigned long cloopTime;
 
 unsigned long previousMillis = 0; // last time update
 unsigned long currentMillis;
-long interval = 10000; // interval at which to do something (milliseconds)
+long interval = 120000; // interval at which to do something (milliseconds)
 int minimum_flow = 50; // We expect to flow of water atleast 50L per hour, otherwise we default it to dryrun
 bool dry_run,first_run_state;
+
+//Float Sensor Connection, Terminal 1 Gnd, Terminal 2 D8
+#define FLOAT_SENSOR  8
 
 void flow () // Interrupt function
 {
   flow_frequency++;
 }
 
+
+
 void setup()
 {
   pinMode(flowsensor, INPUT);
   pinMode(motorCutoff, OUTPUT);
+  digitalWrite(motorCutoff, HIGH);
   digitalWrite(flowsensor, HIGH); // Optional Internal Pull-Up
+  
+  pinMode(FLOAT_SENSOR, INPUT_PULLUP);
+
+  
   Serial.begin(9600);
   attachInterrupt(0, flow, RISING); // Setup Interrupt
   sei(); // Enable interrupts
@@ -32,14 +42,33 @@ void setup()
 
 void loop ()
 {
+   delay(1000);
    if (first_run_state)
     {
-      Serial.print(first_run_state);
-      Serial.println(": Just started, waits for 30 sec before actual calculations"); 
-      delay(1000*3);
+//      For first run, the status of first_run_state is true and will be set false after 30secs.
+      Serial.print(": Just started, waits for 30 sec before actual calculations, First Run state is :"); 
+      Serial.println(first_run_state); 
+      delay(1000*30);
       first_run_state = !first_run_state; //Toggle first_run state
-      Serial.print(first_run_state);
-      Serial.println(": Just started, waits for 30 sec before actual calculations"); 
+      Serial.print("Current First Run state is :"); 
+      Serial.println(first_run_state); 
+    }
+
+    if(digitalRead(FLOAT_SENSOR) == LOW) 
+    {
+    Serial.print("Float Sensor Reading is Low");
+    Serial.println(": Tank is still empty");
+    delay(1000*1);
+    // turn Motor on:
+//    digitalWrite(motorCutoff, HIGH);
+    } 
+    else 
+    {
+    Serial.print("Float Sensor Reading is High"); 
+    Serial.println(": Tank is Full, Turning off Motor now");
+    delay(1000*1);
+    // turn Motor off:
+    digitalWrite(motorCutoff, LOW);
     }
    currentTime = millis();
    // Every second, calculate and print litres/hour
@@ -66,16 +95,19 @@ void loop ()
             previousMillis = currentMillis;
             if (l_hour<minimum_flow && dry_run )
             {
-              Serial.print(l_hour, DEC); // Print litres/hour
-              Serial.println(" L/hour; Currently DRY Running");
-//              At this stage send TURN OFF Signal to Motor
-             digitalWrite(motorCutoff, HIGH);
+             Serial.print(l_hour, DEC); // Print litres/hour
+             Serial.print(" L/hour; Currently DRY Running");
+             delay(1000*5);
+             Serial.println(" :Sending Turn Off Signal to Motor Now");
+             //At this stage send TURN OFF Signal to Motor
+             digitalWrite(motorCutoff, LOW);
             }
-          }    
+          }
+        
       }
       else
       {
-      digitalWrite(motorCutoff, LOW);
+//      digitalWrite(motorCutoff, HIGH);
       dry_run = false;
       previousMillis = 0;
       currentMillis = millis();
