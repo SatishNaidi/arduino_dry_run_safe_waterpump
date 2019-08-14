@@ -23,36 +23,36 @@ void flow () // Interrupt function
 
 void setup()
 {
+  
   pinMode(flowsensor, INPUT);
   pinMode(motorCutoff, OUTPUT);
   digitalWrite(motorCutoff, HIGH);
   digitalWrite(flowsensor, HIGH); // Optional Internal Pull-Up
-  
   pinMode(FLOAT_SENSOR, INPUT_PULLUP);
-
-  
   Serial.begin(9600);
   attachInterrupt(0, flow, RISING); // Setup Interrupt
   sei(); // Enable interrupts
   currentTime = millis();
   cloopTime = currentTime;
   dry_run = false;
-  first_run_state = true;
+//  first_run_state = true;
+  Serial.println("Intiating 30 seconds Delay");
+  delay(30000);
 }
 
 void loop ()
 {
-   delay(1000);
-   if (first_run_state)
-    {
-//      For first run, the status of first_run_state is true and will be set false after 30secs.
-      Serial.print(": Just started, waits for 30 sec before actual calculations, First Run state is :"); 
-      Serial.println(first_run_state); 
-      delay(1000*30);
-      first_run_state = !first_run_state; //Toggle first_run state
-      Serial.print("Current First Run state is :"); 
-      Serial.println(first_run_state); 
-    }
+//   delay(1000);
+//   if (first_run_state)
+//    {
+////      For first run, the status of first_run_state is true and will be set false after 30secs.
+//      Serial.print(": Just started, waits for 30 sec before actual calculations, First Run state is :"); 
+//      Serial.println(first_run_state); 
+//      delay(1000*30);
+//      first_run_state = !first_run_state; //Toggle first_run state
+//      Serial.print("Current First Run state is :"); 
+//      Serial.println(first_run_state); 
+//    }
 
     if(digitalRead(FLOAT_SENSOR) == LOW) 
     {
