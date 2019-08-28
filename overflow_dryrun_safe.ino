@@ -19,8 +19,6 @@ void flow () // Interrupt function
   flow_frequency++;
 }
 
-
-
 void setup()
 {
   
